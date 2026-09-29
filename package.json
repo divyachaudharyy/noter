@@ -9,7 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@blocknote/core": "^0.55.0",
+    "@blocknote/mantine": "^0.55.0",
+    "@blocknote/react": "^0.55.0",
+    "bcryptjs": "^3.0.3",
+    "better-auth": "^1.7.6",
+    "mongoose": "^9.10.2",
     "next": "16.3.6",
+    "next-auth": "^4.24.15",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
