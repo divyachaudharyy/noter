@@ -6,11 +6,12 @@ import Page from "@/models/Page";
 export async function GET(req, { params }) {
   const session = await getServerSession(authOptions);
   if (!session) return new Response("Unauthorized", { status: 401 });
-
+  const { pageId } = await params;
   await connectDB();
   const page = await Page.findOne({
-    _id: params.pageId,
+    _id: pageId,              // ← was params.pageId
     userId: session.user.id,
+
   });
 
   if (!page) return new Response("Not found", { status: 404 });
@@ -22,12 +23,13 @@ export async function PATCH(req, { params }) {
   if (!session) return new Response("Unauthorized", { status: 401 });
 
   const updates = await req.json();
-  await connectDB();
+ const { pageId } = await params;
+await connectDB();
+const page = await Page.findOneAndUpdate(
+  { _id: pageId, userId: session.user.id },   // ← was params.pageId
+  { $set: updates },
+  { new: true }
 
-  const page = await Page.findOneAndUpdate(
-    { _id: params.pageId, userId: session.user.id },
-    { $set: updates },
-    { new: true }
   );
 
   if (!page) return new Response("Not found", { status: 404 });
@@ -37,13 +39,13 @@ export async function PATCH(req, { params }) {
 export async function DELETE(req, { params }) {
   const session = await getServerSession(authOptions);
   if (!session) return new Response("Unauthorized", { status: 401 });
-
-  await connectDB();
-  const page = await Page.findOneAndUpdate(
-    { _id: params.pageId, userId: session.user.id },
-    { $set: { isArchived: true } },
-    { new: true }
-  );
+  const { pageId } = await params;
+await connectDB();
+const page = await Page.findOneAndUpdate(
+  { _id: pageId, userId: session.user.id },   // ← was params.pageId
+  { $set: { isArchived: true } },
+  { new: true }
+);
 
   if (!page) return new Response("Not found", { status: 404 });
   return Response.json(page);
