@@ -13,5 +13,6 @@ const PageSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+PageSchema.index({ title: "text" });
 
 export default mongoose.models.Page || mongoose.model("Page", PageSchema);

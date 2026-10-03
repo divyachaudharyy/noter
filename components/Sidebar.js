@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PageItem from "./PageItem";
+import Link from "next/link";
 
 export default function Sidebar() {
     const [pages, setPages] = useState([]);
@@ -14,8 +15,10 @@ export default function Sidebar() {
     };
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadRootPages();
+
+        window.addEventListener("pages-updated", loadRootPages);
+        return () => window.removeEventListener("pages-updated", loadRootPages);
     }, []);
 
     const createPage = async () => {
@@ -32,6 +35,7 @@ export default function Sidebar() {
     return (
         <div style={{ width: 240, borderRight: "1px solid #ddd", padding: 8 }}>
             <button onClick={createPage}>+ New Page</button>
+            <Link href="/pages/trash">🗑️ Trash</Link>
             <div style={{ marginTop: 12 }}>
                 {pages.map((page) => (
                     <PageItem key={page._id} page={page} />

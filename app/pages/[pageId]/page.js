@@ -28,11 +28,11 @@ export default function PageView() {
   }, [pageId]);
   const router = useRouter();
 
-  const archivePage = async () => {
-    await fetch(`/api/pages/${pageId}`, { method: "DELETE" });
-    router.push("/pages");
-  };
-
+ const archivePage = async () => {
+  await fetch(`/api/pages/${pageId}`, { method: "DELETE" });
+  window.dispatchEvent(new Event("pages-updated"));  // ← yeh add kar
+  router.push("/pages");
+};
   const saveContent = useCallback(async () => {
     const content = JSON.stringify(editor.document);
     await fetch(`/api/pages/${pageId}`, {

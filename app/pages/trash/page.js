@@ -15,13 +15,14 @@ export default function TrashPage() {
   }, []);
 
   const restorePage = async (pageId) => {
-    await fetch(`/api/pages/${pageId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isArchived: false }),
-    });
-    loadTrash();
-  };
+  await fetch(`/api/pages/${pageId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isArchived: false }),
+  });
+  loadTrash();
+  window.dispatchEvent(new Event("pages-updated"));  // ← yeh add kar
+};
 
   return (
     <div style={{ padding: 24 }}>
