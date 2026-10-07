@@ -27,12 +27,22 @@ export default function PageView() {
       });
   }, [pageId]);
   const router = useRouter();
+  const updateTitle = async (newTitle) => {
+    setPage({ ...page, title: newTitle });
+    await fetch(`/api/pages/${pageId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: newTitle }),
+    });
+    window.dispatchEvent(new Event("pages-updated"));
+  };
 
- const archivePage = async () => {
-  await fetch(`/api/pages/${pageId}`, { method: "DELETE" });
-  window.dispatchEvent(new Event("pages-updated"));  // ← yeh add kar
-  router.push("/pages");
-};
+
+  const archivePage = async () => {
+    await fetch(`/api/pages/${pageId}`, { method: "DELETE" });
+    window.dispatchEvent(new Event("pages-updated"));  // ← yeh add kar
+    router.push("/pages");
+  };
   const saveContent = useCallback(async () => {
     const content = JSON.stringify(editor.document);
     await fetch(`/api/pages/${pageId}`, {
@@ -69,7 +79,14 @@ export default function PageView() {
           }}
         />
       </div>
-      <h1>{page.title}</h1><button onClick={archivePage}>🗑️ Delete</button>
+      <input
+        type="text"
+        value={page.title}
+        onChange={(e) => setPage({ ...page, title: e.target.value })}
+        onBlur={(e) => updateTitle(e.target.value)}
+        style={{ fontSize: 32, fontWeight: "bold", border: "none", outline: "none", width: "100%" }}
+      />
+      <button onClick={archivePage}>🗑️ Delete</button>
       <BlockNoteView editor={editor} onChange={saveContent} />
     </div>
   );
